@@ -1,45 +1,68 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-// Moves the game object
-public class TeddyBear : MonoBehaviour {
+/// <summary>
+/// A teddy bear
+/// </summary>
+public class TeddyBear : MonoBehaviour
+{
+    // explosion support
+    [SerializeField]
+    GameObject prefabExplosion;
 
-	// Use this for initialization
-	void Start () {
-		
-		// get the game object moving
-		// Rigidbody2D is the data type of the component we want to move
-		
-		/* Rigidbody2D rb2d = GetComponent<Rigidbody2D>();
-		rb2d.AddForce(new Vector2(1, 0), 
-			ForceMode2D.Impulse); */
-		
-		/* GetComponent<Rigidbody2D>().AddForce(
-			new Vector2(1, 0), 
-			ForceMode2D.Impulse); */
+    // make the 3 sprites visible in the inspector
+    /*[SerializeField] 
+    Sprite teddyBearSprite0;
+    [SerializeField] 
+    Sprite teddyBearSprite1;
+    [SerializeField] 
+    Sprite teddyBearSprite2;*/
+    
+	// death support
+	const float TeddyBearLifespanSeconds = 10;
+	Timer deathTimer;
 
-		// range of impulse forces to apply
-		const float MinImpulseForce = 3f;
-		const float MaxImpulseForce = 5f;
-		
-		// get a random angle between 0 to 2pi (0 to 180 degrees)
-		float angle = Random.Range(0, 2 * Mathf.PI);
-		
-		Vector2 direction = new Vector2(
-			Mathf.Cos(angle), Mathf.Sin(angle));
-		
-		// get a random magnitude within our range of impulse forces
-		float magnitude = Random.Range(MinImpulseForce, MaxImpulseForce);
-		GetComponent<Rigidbody2D>().AddForce(
-			direction * magnitude,
-			ForceMode2D.Impulse);
+    /// <summary>
+    /// Use this for initialization
+    /// </summary>
+    void Start()
+    {
+        // apply impulse force to get teddy bear moving
+        const float MinImpulseForce = 3f;
+        const float MaxImpulseForce = 5f;
+        float angle = Random.Range(0, 2 * Mathf.PI);
+        Vector2 direction = new Vector2(
+            Mathf.Cos(angle), Mathf.Sin(angle));
+        float magnitude = Random.Range(MinImpulseForce, MaxImpulseForce);
+        GetComponent<Rigidbody2D>().AddForce(
+            direction * magnitude,
+            ForceMode2D.Impulse);
+
+		// create and start timer
+		deathTimer = gameObject.AddComponent<Timer>();
+		deathTimer.Duration = TeddyBearLifespanSeconds;
+		deathTimer.Run();
 	}
 
-	private void OnCollisionEnter2D(Collision2D other) {
-		print("ouch");
+    /// <summary>
+    /// Update is called once per frame
+    /// </summary>
+    void Update()
+    {
+		// kill teddy bear if death timer finished
+
 	}
+
+    /// <summary>
+    /// Checks whether or not to blow up
+    /// </summary>
+    /// <param name="coll">collision info</param>
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        // only blow up when colliding with a teddy bear
+        if (coll.gameObject.tag == "TeddyBear") {
+
+        }
+    }
 }
-
